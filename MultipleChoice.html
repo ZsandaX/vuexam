@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>素養題</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.28.7/dist/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">第{{number}}題</a>
+        </nav>
+        <div class="body border-primary border-top border-bottom py-4">
+            <div class="jumbotron py-4">基礎代謝率(BMR)是指：我們在安靜狀態下(通常為靜臥狀態)消耗的最低熱量，人的其他活動都建立在這個基礎上。計算基礎代謝率，美國運動醫學協會提供了以下的公式：
+                <br>BMR(男)=(13.7×體重(公斤))+(5.0×身高(公分))-(6.8×年齡)+66
+                <br>BMR(女)=(9.6×體重(公斤))+(1.8×身高(公分))-(4.7×年齡)+655
+            </div>
+            <question v-for="(description, key) of options" :description="description" @update="replication[key]=$event"
+                :key="key">({{key+1}}) </question>
+        </div>
+        <div class="foot mx-auto">
+            <div class="text-danger">送出作答後，無法再修改！</div>
+            <input type="image" src="img/confirm.jpg" alt="送出" class="offset-5 col-2"  @click="confirm">
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    new Vue({
+        el: '#app',
+        components: {
+            'question': httpVueLoader('MultipleChoice.vue')
+        },
+        data: {
+            number: 2,
+            options: [['小沈是一個年紀33歲男性上班族，身高是175公分，體重77.3公斤，為了維持身材，所以在飲食方面，儘量只攝取基礎代謝率需要消耗的熱量(cal)；請問以小沈的條件，攝取多少卡(cal)的熱量比較能維持身材呢？', '1556.98', '1566.98', '1775.70', '1765.70']],
+            answer: [3],
+            replication: []
+        },
+        computed: {
+            img_url() {
+                return `img/q${this.number}.png`;
+            }
+        },
+        methods: {
+            confirm(){
+                let result = (this.answer.toString() == this.replication.toString());
+                if(result){
+                    swal({type: 'success', title: '答對了！', text: '請做下一題' })
+                    .then((result)=>{
+                        location.replace('TrueOrFalse.php');
+                    });
+                }else{
+                    swal({type: 'error', title: '答錯了！', text: '請再試一次' }); 
+                } 
+            }
+        }
+    });
+</script>
+<style scoped>
+    * {
+        font-family: 標楷體;
+        font-size: 1.3rem;
+    }
+
+    .body {
+        border-top-width: 2px !important;
+        border-bottom-width: 2px !important;
+    }
+
+    .image {
+        border-width: 5px !important;
+    }
+</style>

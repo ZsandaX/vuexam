@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>素養題</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.28.7/dist/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">第{{number}}題</a>
+        </nav>
+        <div class="body border-primary border-top border-bottom py-4">
+            <table class="table table-bordered table-sm" style="text-align: center;">
+                <tr>
+                    <th>年月別</th>
+                    <th>人口數</th>
+                </tr>
+                <tr>
+                    <td>民國96年</td>
+                    <td>2295 8360</td>
+                </tr>
+                <tr>
+                    <td>民國97年</td>
+                    <td>2303 7031</td>
+                </tr>
+                <tr>
+                    <td style="line-height: 10px;">‧<br>‧<br>‧</td>
+                    <td style="line-height: 10px;">‧<br>‧<br>‧</td>
+                </tr>
+                <tr>
+                    <td>民國107年</td>
+                    <td>2357 1990</td>
+                </tr>
+            </table>
+            <div class="mb-3">{{title}}</div>
+            <question v-for="(description, key) of questions" :description="description" @update="replication[key]=$event"
+                :key="key">({{key+1}}) </question>
+        </div>
+        <div class="foot mx-auto">
+            <div class="text-danger">送出作答後，無法再修改！</div>
+            <input type="image" src="img/confirm.jpg" alt="送出" class="offset-5 col-2" @click="confirm">
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    new Vue({
+        el: '#app',
+        components: {
+            'question': httpVueLoader('TrueOrFalse.vue')
+        },
+        data: {
+            number: 1,
+            title: "上表為內政部戶政司的人口數統計資料，請你依據上面的統計資料，判斷下列說法是否正確。正確的畫○，錯誤的話畫X",
+            questions: ["96年的台灣人口數，以四捨五入法估算至百萬位，可稱有2300萬人口",
+                "97年的台灣人口數，以無條件進入法估算至百萬位，可稱有2300萬人口",
+                "107年的台灣人口數，以無條件捨去法估算至百萬位，可稱有2300萬人口"],
+            answer: [1, 2, 1],
+            replication: []
+        },
+        computed: {
+            img_url() {
+                return `img/q${this.number}.png`;
+            }
+        },
+        methods: {
+            confirm(){
+                let result = (this.answer.toString() == this.replication.toString());
+                if(result){
+                    swal({type: 'success', title: '答對了！', text: '請做下一題' })
+                    .then((result)=>{
+                        location.replace('MultipleChoice.php');
+                    });
+                }else{
+                    swal({type: 'error', title: '答錯了！', text: '請再試一次' }); 
+                }    
+            }
+        }
+    });
+</script>
+<style scoped>
+    * {
+        font-family: 標楷體;
+        font-size: 1.3rem;
+    }
+
+    .body {
+        border-top-width: 2px !important;
+        border-bottom-width: 2px !important;
+    }
+
+    .image {
+        border-width: 5px !important;
+    }
+</style>
